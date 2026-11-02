@@ -1,0 +1,22 @@
+{
+  "images": [
+    {
+      "file": "images/decision-native.png",
+      "sha256": "9453ee64c4cc7f096e6347a16ed8f0e91607097c8ddcc23fb733c9cb6a393a78",
+      "type": "native_screenshot_crop",
+      "source_app": "ai-memory3.3.1 official built-in web",
+      "source_url": "http://127.0.0.1:18683/web/w/repogo-demo/library/p/decisions/reservation.md",
+      "original_screenshot": "operations/desk/data/production/2026-11-03-0100/ai-memory/decision-web.png",
+      "crop": {
+        "x": 550,
+        "y": 110,
+        "width": 1040,
+        "height": 670
+      },
+      "content": "original fictional reservation decision",
+      "generated": false,
+      "ui_redrawn": false,
+      "caption": "原生页面截图，只裁切；未实现预约应用"
+    }
+  ]
+}
