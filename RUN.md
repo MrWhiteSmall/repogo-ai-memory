@@ -30,7 +30,7 @@ macOS Apple Silicon：Python3，首次联网，约20MB官方归档。`sh start.s
 
 ## 完整验收与数据
 
-`python3 verify.py`：下载固定binary、启动独立临时实例18684、完成两用途、停止再重启、读回同一个决策版本与已领状态，最后停止。报告在`output/latest-verify.json`，临时数据由Python临时目录正常清理；不会触及你的练习实例或其他业务。
+`python3 verify.py`：下载固定binary、启动独立临时实例18684、完成两用途、停止再重启、读回同一个决策版本与已领状态，最后停止。非Mac系统需使用`python3 verify.py --binary 官方3.3.1程序路径`，本轮未实测。报告在`output/latest-verify.json`，临时数据由Python临时目录正常清理；不会触及你的练习实例或其他业务。
 
 普通服务停止时不删除数据。备份练习数据应先Ctrl+C停止，再复制`.runtime/demo-data`整个目录；不要只备份SQLite单个文件。本轮验证了停启持久化，未验证备份导入、版本升级或真实多用户部署。
 

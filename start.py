@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """Original RepoGo launcher. Official ai-memory provides all storage and search."""
-import argparse,hashlib,json,os,platform,subprocess,tarfile,urllib.request
+import argparse,hashlib,json,os,platform,subprocess,tarfile,urllib.request,time
 from pathlib import Path
 ROOT=Path(__file__).resolve().parent
 VERSION='3.3.1'
@@ -25,8 +25,10 @@ def binary(explicit=None):
         raise RuntimeError('自动下载入口本轮仅验收macOS Apple Silicon。其他系统按RUN.md取得官方3.3.1 binary，再加 --binary 路径；未宣称Linux/Windows通过。')
     runtime.mkdir(exist_ok=True)
     archive=runtime/ASSET
+    deadline=time.monotonic()+120
     with urllib.request.urlopen(URL,timeout=30) as r,archive.open('wb') as f:
         while True:
+            if time.monotonic()>deadline:raise RuntimeError('下载超过120秒预算，请检查网络后重试')
             chunk=r.read(1024*1024)
             if not chunk:break
             f.write(chunk)
@@ -39,6 +41,11 @@ def binary(explicit=None):
     exe.chmod(0o755)
     (runtime/'binary-sha256.txt').write_text(hashlib.sha256(exe.read_bytes()).hexdigest()+'\n')
     return exe
+
+def checked_version(exe):
+    version=subprocess.check_output([str(exe),'--version'],text=True,timeout=10).strip()
+    if version!='ai-memory '+VERSION:raise RuntimeError('需要固定版本 '+VERSION+'，实际 '+version)
+    return version
 
 def env(port):
     # Preserve OS paths, not provider/agent credentials. Never rewrite HOME or shell config.
@@ -60,8 +67,7 @@ def main():
     ap.add_argument('--data',default=str(ROOT/'.runtime/demo-data'))
     ap.add_argument('--port',type=int,default=18683)
     args=ap.parse_args();exe=binary(args.binary)
-    version=subprocess.check_output([str(exe),'--version'],text=True,timeout=10).strip()
-    if version!='ai-memory '+VERSION:raise RuntimeError('需要固定版本 '+VERSION+'，实际 '+version)
+    checked_version(exe)
     print('启动原创样例服务：http://127.0.0.1:%d/web\n保持本窗口，另开窗口运行 python3 exercise.py。按Ctrl+C停止。'%args.port,flush=True)
     print('这是只监听本机、无账号鉴权的练习服务。只放原创虚构样例；实际私人记忆请按官方init/auth文档另建实例。',flush=True)
     p=subprocess.Popen(command(exe,args.data,args.port),env=env(args.port))
